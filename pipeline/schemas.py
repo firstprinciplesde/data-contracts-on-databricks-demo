@@ -8,7 +8,7 @@ Three things use these and nothing else:
 
 ORDERS_LANDING = """
   order_id STRING NOT NULL, customer_id STRING NOT NULL, amount DECIMAL(10,2) NOT NULL,
-  created_at TIMESTAMP NOT NULL, quantity INT, currency STRING, channel STRING"""
+  created_at TIMESTAMP NOT NULL, quantity INT, currency STRING, channel STRING, discount_code STRING"""
 
 SILVER_ORDERS = """
   order_id STRING NOT NULL, customer_id STRING NOT NULL, amount DECIMAL(10,2) NOT NULL, created_at TIMESTAMP NOT NULL"""
