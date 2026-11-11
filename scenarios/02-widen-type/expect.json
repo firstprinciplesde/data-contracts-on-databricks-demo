@@ -1,0 +1,8 @@
+{
+  "kind": "widen a type",
+  "release": "minor by our rule",
+  "breaking": {
+    "consumer": "ERROR",
+    "producer": "ERROR"
+  }
+}

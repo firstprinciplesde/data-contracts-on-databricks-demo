@@ -1,0 +1,39 @@
+name: Contract data tests
+
+# After the data is loaded: test the real tables on Databricks against their contracts.
+# Runs on merge to main, every morning (after the nightly load) and by hand. Never on pull requests,
+# so pull requests from forks never get the secrets. Skips with a notice when the secrets are missing.
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  data-tests:
+    runs-on: ubuntu-latest
+    env:
+      DATACONTRACT_DATABRICKS_SERVER_HOSTNAME: ${{ secrets.DATABRICKS_SERVER_HOSTNAME }}
+      DATACONTRACT_DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
+      DATACONTRACT_DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the Databricks secrets exist
+        id: secrets
+        run: |
+          if [ -n "$DATACONTRACT_DATABRICKS_SERVER_HOSTNAME" ] && [ -n "$DATACONTRACT_DATABRICKS_HTTP_PATH" ] && [ -n "$DATACONTRACT_DATABRICKS_TOKEN" ]; then
+            echo "have=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::No Databricks secrets in this repo, so the data tests are skipped. Add DATABRICKS_SERVER_HOSTNAME, DATABRICKS_HTTP_PATH and DATABRICKS_TOKEN under Settings, Secrets and variables, Actions."
+            echo "have=false" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-python@v5
+        if: steps.secrets.outputs.have == 'true'
+        with:
+          python-version: "3.11"
+      - run: pip install -r ci/requirements.txt
+        if: steps.secrets.outputs.have == 'true'
+      - name: Test the real tables against the contracts
+        if: steps.secrets.outputs.have == 'true'
+        run: datacontract ci contracts/*.yaml --server databricks --fail-on error

@@ -1,0 +1,8 @@
+{
+  "kind": "tighten: currency becomes required",
+  "release": "major",
+  "breaking": {
+    "consumer": "INFO",
+    "producer": "ERROR"
+  }
+}

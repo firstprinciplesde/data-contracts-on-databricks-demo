@@ -1,0 +1,4 @@
+# A contract change needs both sides: the team that publishes it and the teams that read it.
+# Replace the handles with real teams. Branch protection then requires these reviews on every contract PR.
+/contracts/orders_api.yaml     @yash-analytics
+/contracts/revenue_daily.yaml  @yash-analytics

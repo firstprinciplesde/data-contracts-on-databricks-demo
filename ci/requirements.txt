@@ -1,0 +1,2 @@
+datacontract-cli[databricks]
+pyyaml

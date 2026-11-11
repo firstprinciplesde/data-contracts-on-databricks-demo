@@ -1,0 +1,59 @@
+apiVersion: v3.2.0
+kind: DataContract
+id: revenue-daily
+name: revenue_daily
+version: 1.0.0
+status: active
+domain: finance
+description:
+  purpose: Daily revenue per day, a data product owned by the analytics team and read by finance and ML.
+schema:
+  - name: revenue_daily
+    physicalName: revenue_daily
+    logicalType: object
+    physicalType: table
+    properties:
+      - name: order_date
+        logicalType: date
+        physicalType: DATE
+        required: true
+        unique: true
+        primaryKey: true
+        primaryKeyPosition: 1
+      - name: orders
+        logicalType: integer
+        physicalType: BIGINT
+        required: true
+        logicalTypeOptions:
+          minimum: 1
+          maximum: 100000
+      - name: revenue
+        logicalType: number
+        physicalType: DECIMAL(18,2)
+        required: true
+        description: Sum of order amounts in dollars.
+        logicalTypeOptions:
+          minimum: 0
+          maximum: 10000000
+    quality:
+      - id: revenue_daily_not_empty
+        metric: rowCount
+        mustBeGreaterThan: 0
+slaProperties:
+  - property: frequency
+    value: 1
+    unit: d
+  - property: latency
+    value: 1
+    unit: d
+team:
+  name: analytics
+customProperties:
+  - property: consumers
+    value: finance_export, ml_features
+servers:
+  - server: databricks
+    type: databricks
+    environment: dev
+    catalog: workspace
+    schema: vid11_databricks_contracts

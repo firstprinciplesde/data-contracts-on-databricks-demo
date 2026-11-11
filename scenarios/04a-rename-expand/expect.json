@@ -1,0 +1,8 @@
+{
+  "kind": "rename, expand (add the new name, deprecate the old)",
+  "release": "minor",
+  "breaking": {
+    "consumer": "INFO",
+    "producer": "ERROR"
+  }
+}

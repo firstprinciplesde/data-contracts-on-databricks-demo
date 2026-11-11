@@ -1,0 +1,87 @@
+apiVersion: v3.2.0
+kind: DataContract
+id: orders-api
+name: orders_api
+version: 1.1.0
+status: active
+domain: sales
+description:
+  purpose: Orders published by the Orders API, one record per order.
+schema:
+- name: orders_landing
+  logicalType: object
+  physicalType: table
+  properties:
+  - name: order_id
+    logicalType: string
+    physicalType: STRING
+    required: true
+    unique: true
+    primaryKey: true
+    primaryKeyPosition: 1
+  - name: customer_id
+    logicalType: string
+    physicalType: STRING
+    required: true
+    logicalTypeOptions:
+      pattern: ^c[0-9]{4}$
+  - name: amount
+    logicalType: number
+    physicalType: DECIMAL(10,2)
+    required: true
+    description: Order total in dollars.
+    logicalTypeOptions:
+      minimum: 0.01
+      maximum: 1000
+  - name: created_at
+    logicalType: timestamp
+    physicalType: TIMESTAMP
+    required: true
+  - name: quantity
+    logicalType: integer
+    physicalType: INT
+    required: false
+    logicalTypeOptions:
+      minimum: 1
+      maximum: 100
+  - name: currency
+    logicalType: string
+    physicalType: STRING
+    required: false
+  - name: channel
+    logicalType: string
+    physicalType: STRING
+    required: false
+    deprecated: true
+    description: Deprecated. Removal 2026-12-31.
+  quality:
+  - id: orders_not_empty
+    metric: rowCount
+    mustBeGreaterThan: 0
+  - id: amount_max_range
+    type: sql
+    query: SELECT COUNT(*) FROM {object} WHERE amount > 1000
+    mustBe: 0
+  - id: created_at_not_in_future
+    type: sql
+    query: SELECT COUNT(*) FROM {object} WHERE created_at > current_timestamp()
+    mustBe: 0
+  - id: currency_allowed_values
+    type: sql
+    query: SELECT COUNT(*) FROM {object} WHERE currency NOT IN ('USD', 'CAD')
+    mustBe: 0
+slaProperties:
+- property: frequency
+  value: 1
+  unit: d
+team:
+  name: checkout-platform
+customProperties:
+- property: consumers
+  value: silver_orders
+servers:
+- server: databricks
+  type: databricks
+  environment: dev
+  catalog: workspace
+  schema: vid11_databricks_contracts

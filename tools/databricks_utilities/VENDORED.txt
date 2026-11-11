@@ -1,0 +1,2 @@
+Vendored copy of github.com/yash-analytics/Databricks-utilities (src/databricks_utilities) until it is published.
+Notebooks use it as: from databricks_utilities.contracts import contract_from_lineage

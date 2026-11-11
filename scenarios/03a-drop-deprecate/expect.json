@@ -1,0 +1,8 @@
+{
+  "kind": "drop a column, step 1 (deprecate)",
+  "release": "minor",
+  "breaking": {
+    "consumer": "INFO",
+    "producer": "INFO"
+  }
+}

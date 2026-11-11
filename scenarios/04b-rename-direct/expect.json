@@ -1,0 +1,8 @@
+{
+  "kind": "rename in place (do not)",
+  "release": "major",
+  "breaking": {
+    "consumer": "ERROR",
+    "producer": "ERROR"
+  }
+}

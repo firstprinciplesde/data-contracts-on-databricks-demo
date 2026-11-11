@@ -1,0 +1,8 @@
+{
+  "kind": "drop a column, step 2 (remove)",
+  "release": "major",
+  "breaking": {
+    "consumer": "ERROR",
+    "producer": "INFO"
+  }
+}

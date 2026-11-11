@@ -1,0 +1,62 @@
+name: Contract CI
+
+# Pull requests: no data and no secrets. Same steps as the datacontract project's own contract-ci recipe
+# (lint, breaking against the base branch, test --dry-run), plus our check of the declared job output.
+on:
+  pull_request:
+
+jobs:
+  contract-files:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r ci/requirements.txt
+      - name: Lint the contracts
+        run: |
+          for f in contracts/*.yaml; do
+            echo "== lint $f"
+            datacontract lint "$f"
+          done
+      - name: Breaking changes against the base branch
+        run: |
+          for f in contracts/*.yaml; do
+            if git show "origin/${{ github.base_ref }}:$f" > /tmp/old.yaml 2>/dev/null; then
+              echo "== breaking $f"
+              datacontract breaking /tmp/old.yaml "$f"
+            fi
+          done
+      - name: Plan the data tests (dry run, no connection)
+        run: |
+          for f in contracts/*.yaml; do
+            echo "== dry run $f"
+            datacontract test "$f" --server databricks --dry-run
+          done
+      - name: Who owns and who consumes
+        run: python ci/consumers.py "$GITHUB_STEP_SUMMARY"
+
+  declared-output:
+    # Our addition: what the jobs declare they write (pipeline/schemas.py) must match the contracts.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pyyaml
+      - run: python ci/check_output_schema.py
+
+  change-scenarios:
+    # The playbook's change scenarios: the breaking levels of each must be what the playbook says.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r ci/requirements.txt
+      - run: python ci/check_scenarios.py

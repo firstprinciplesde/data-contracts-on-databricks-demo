@@ -1,0 +1,8 @@
+{
+  "kind": "change a meaning, step 2: remove the old column",
+  "release": "major",
+  "breaking": {
+    "consumer": "ERROR",
+    "producer": "ERROR"
+  }
+}

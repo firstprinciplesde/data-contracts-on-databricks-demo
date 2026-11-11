@@ -1,0 +1,8 @@
+{
+  "kind": "add an optional column",
+  "release": "minor",
+  "breaking": {
+    "consumer": "INFO",
+    "producer": "ERROR"
+  }
+}
