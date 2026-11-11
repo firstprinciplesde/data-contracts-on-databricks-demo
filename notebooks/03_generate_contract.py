@@ -9,8 +9,8 @@ import os, sys, yaml
 from databricks.sdk import WorkspaceClient
 ROOT = os.path.abspath(os.path.join(os.getcwd(), ".."))
 sys.path.append(os.path.join(ROOT, "tools"))
-from databricks_utilities.contracts import contract_from_lineage, save_contract, to_yaml
-from databricks_utilities.lineage import find_readers
+from databricks_awesome_utils.contracts import contract_from_lineage, save_contract, to_yaml
+from databricks_awesome_utils.lineage import find_readers
 
 S = "workspace.vid11_databricks_contracts"
 ws = WorkspaceClient()

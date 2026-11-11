@@ -1,6 +1,6 @@
 """Draft an ODCS data contract for a table from what its readers actually use.
 
-    from databricks_utilities.contracts import contract_from_lineage, save_contract
+    from databricks_awesome_utils.contracts import contract_from_lineage, save_contract
     contract = contract_from_lineage("main.sales.orders", team="analytics")
     save_contract(contract, "contracts/orders.yaml")
 
@@ -21,7 +21,7 @@ import re
 import yaml
 from databricks.sdk import WorkspaceClient
 
-from databricks_utilities.lineage.finder import Reader, find_readers
+from databricks_awesome_utils.lineage.finder import Reader, find_readers
 
 _INT = {"tinyint", "smallint", "int", "integer", "bigint", "long", "short", "byte"}
 _NUM = {"float", "double", "real"}
