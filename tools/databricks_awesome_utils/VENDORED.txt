@@ -1,2 +1,2 @@
 Vendored copy of github.com/firstprinciplesde/databricks-awesome-utils (src/databricks_awesome_utils) until it is published.
-Notebooks use it as: from databricks_awesome_utils.contracts import contract_from_lineage
+Notebooks use it as: from databricks_awesome_utils.odcs import odcs_contract_from_lineage

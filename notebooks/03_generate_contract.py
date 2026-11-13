@@ -9,7 +9,7 @@ import os, sys, yaml
 from databricks.sdk import WorkspaceClient
 ROOT = os.path.abspath(os.path.join(os.getcwd(), ".."))
 sys.path.append(os.path.join(ROOT, "tools"))
-from databricks_awesome_utils.contracts import contract_from_lineage, save_contract, to_yaml
+from databricks_awesome_utils.odcs import odcs_contract_from_lineage, save_contract, to_yaml
 from databricks_awesome_utils.lineage import find_readers
 
 S = "workspace.vid11_databricks_contracts"
@@ -21,7 +21,7 @@ for table in ["orders_landing", "revenue_daily"]:
     full = f"{S}.{table}"
     print("=====", table)
     print("who reads it, and which columns:", find_readers(full, ws))
-    contract = contract_from_lineage(full, ws, spark=spark, team="analytics")
+    contract = odcs_contract_from_lineage(full, ws, spark=spark, team="analytics")
     path = save_contract(contract, os.path.join(ROOT, "contracts", "generated", f"{table}.yaml"))
     for p in contract["schema"][0]["properties"]:
         print(f"  {p['name']:14} required={p['required']!s:5} {p['description']}")

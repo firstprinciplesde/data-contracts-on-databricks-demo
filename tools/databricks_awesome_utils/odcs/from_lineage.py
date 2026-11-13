@@ -1,7 +1,7 @@
 """Draft an ODCS data contract for a table from what its readers actually use.
 
-    from databricks_awesome_utils.contracts import contract_from_lineage, save_contract
-    contract = contract_from_lineage("main.sales.orders", team="analytics")
+    from databricks_awesome_utils.odcs import odcs_contract_from_lineage, save_contract
+    contract = odcs_contract_from_lineage("main.sales.orders", team="analytics")
     save_contract(contract, "contracts/orders.yaml")
 
 How the draft is decided:
@@ -67,7 +67,7 @@ def _profile(spark, table: str, columns, max_categories: int):
     return out
 
 
-def contract_from_lineage(table: str, ws: WorkspaceClient | None = None, spark=None, *, team: str = "unknown",
+def odcs_contract_from_lineage(table: str, ws: WorkspaceClient | None = None, spark=None, *, team: str = "unknown",
                           version: str = "0.1.0", readers: list[Reader] | None = None, pad: float = 0.5,
                           max_categories: int = 10) -> dict:
     """Return an ODCS v3 contract (a dict) for `table` (catalog.schema.table).
