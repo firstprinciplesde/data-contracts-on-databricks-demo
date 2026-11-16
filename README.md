@@ -6,7 +6,7 @@
 
 [Open Data Contract Standard](https://bitol-io.github.io/open-data-contract-standard/latest/) · [Data Contract CLI](https://cli.datacontract.com) · [DQX](https://github.com/databrickslabs/dqx) · Databricks Free Edition
 
-Companion repo for the *Data Contracts on Databricks* video on the First Principles Data Engineering channel.
+Companion repo for the *Data Contracts on Databricks* video on the First Principles Data Engineering channel. If it helps you, star the repo so you can find it again.
 
 </div>
 
@@ -73,7 +73,11 @@ That is the check a pull request runs before any data exists.
    python ci/check_scenarios.py
    ```
    *Checkpoint:* nine scenarios print, each with its `breaking` level for the consumer and the producer view.
-3. **Put the repo in your workspace** (Free Edition works). Use a Git folder (Workspace, Create, Git folder; a private repo needs a GitHub credential under Settings, Linked accounts) or upload it with the Databricks CLI.
+3. **Put the repo in your workspace** (Free Edition works). Use a Git folder:
+   - *Private copy only:* link GitHub first. Click your name, **Settings**, **Linked accounts**, **Add Git credential**, pick **GitHub**, **Link**, and authorize the Databricks GitHub app on your repo (the docs recommend the app; a fine-grained token with Contents set to Read and write also works). A public repo clones without this.
+   - In the workspace sidebar click **Workspace**, then **Create**, then **Git folder**. Paste the repo URL, check the provider, and click **Create Git folder**.
+   - No Git folder? Upload `notebooks/`, `pipeline/`, `contracts/`, `producer/`, `scenarios/` and `tools/` with the Databricks CLI (`databricks workspace import-dir`).
+   Steps from the Databricks docs on [Git credentials](https://docs.databricks.com/aws/en/repos/repos-setup) and [cloning a Git folder](https://docs.databricks.com/aws/en/repos/git-operations-with-repos).
 4. **Run `notebooks/00_setup`.** *Checkpoint:* the schema `vid11_databricks_contracts` has four tables, all created from `pipeline/schemas.py`.
 5. **Run `notebooks/01_producer`** with `batch = good`, then `cents`, then `extra`. *Checkpoint:*
 
@@ -96,6 +100,10 @@ That is the check a pull request runs before any data exists.
 | `DATABRICKS_SERVER_HOSTNAME` | for example `dbc-xxxx.cloud.databricks.com` (no `https://`) |
 | `DATABRICKS_HTTP_PATH` | your SQL warehouse's HTTP path |
 | `DATABRICKS_TOKEN` | a personal access token, with a short expiry |
+
+Where the values come from:
+- **Host and HTTP path:** Databricks, **SQL Warehouses**, open your warehouse, **Connection details** tab (Server hostname and HTTP path).
+- **Token:** click your name, **Settings**, **Developer**, next to **Access tokens** click **Manage**, **Generate new token**. Give it a short lifetime and copy it once. See the Databricks docs on [personal access tokens](https://docs.databricks.com/aws/en/dev-tools/auth/pat).
 
 The pull request checks never need these, and pull requests from forks never get them. Delete the secrets and revoke the token when you are done.
 
