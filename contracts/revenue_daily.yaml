@@ -4,9 +4,9 @@ id: revenue-daily
 name: revenue_daily
 version: 1.0.0
 status: active
-domain: finance
+domain: sales
 description:
-  purpose: Daily revenue per day, a data product owned by the analytics team and read by finance and ML.
+  purpose: Gold contract. Daily orders and revenue, enforced when the analytics team writes the gold table from silver.
 schema:
   - name: revenue_daily
     physicalName: revenue_daily
@@ -48,9 +48,6 @@ slaProperties:
     unit: d
 team:
   name: analytics
-customProperties:
-  - property: consumers
-    value: finance_export, ml_features
 servers:
   - server: databricks
     type: databricks

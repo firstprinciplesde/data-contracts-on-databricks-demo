@@ -17,7 +17,7 @@ ws = WorkspaceClient()
 os.makedirs(os.path.join(ROOT, "contracts", "generated"), exist_ok=True)
 
 # COMMAND ----------
-for table in ["orders_landing", "revenue_daily"]:
+for table in ["orders_landing"]:
     full = f"{S}.{table}"
     print("=====", table)
     print("who reads it, and which columns:", find_readers(full, ws))

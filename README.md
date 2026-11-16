@@ -2,7 +2,7 @@
 
 # Data Contracts on Databricks
 
-**Two data contracts between teams: checked on every pull request, enforced before data is published, and tested again after it loads.**
+**Two data contracts between teams: checked on every pull request, enforced when data is written, and tested again after it loads.**
 
 [Open Data Contract Standard](https://bitol-io.github.io/open-data-contract-standard/latest/) · [Data Contract CLI](https://cli.datacontract.com) · [DQX](https://github.com/databrickslabs/dqx) · Databricks Free Edition
 
@@ -12,11 +12,9 @@ Companion repo for the *Data Contracts on Databricks* video on the First Princip
 
 ```mermaid
 flowchart LR
-  A["Orders API<br/>team: checkout-platform"] -- "orders_api.yaml" --> B[("orders_landing")]
-  B --> C[("silver_orders")]
-  C -- "revenue_daily.yaml<br/>team: analytics" --> D[("revenue_daily")]
-  D --> E["finance_export"]
-  D --> F["ml_features"]
+  A["Orders API<br/>team: checkout-platform"] -- "orders_api.yaml" --> B[("bronze<br/>orders_landing")]
+  B --> C[("silver<br/>silver_orders")]
+  C -- "revenue_daily.yaml<br/>team: analytics" --> D[("gold<br/>revenue_daily")]
 ```
 
 ## Try it in two minutes (no Databricks needed)
@@ -47,7 +45,7 @@ That is the check a pull request runs before any data exists.
 | When | Where | What it checks |
 |---|---|---|
 | Pull request, no data and no secrets | GitHub Actions, [`contract-ci.yml`](.github/workflows/contract-ci.yml) | lint, `breaking` against the base branch, `test --dry-run`, the job's declared output against the contract, the change scenarios |
-| Before publish | notebooks `01` and `02` | DQX rules built from the contract: exact columns, order and types first, then the value rules. A bad batch goes to quarantine and nothing is published |
+| When data is written | notebooks `01` (bronze) and `02` (gold) | DQX rules built from the contract: exact columns, order and types first, then the value rules. A bad batch goes to quarantine and is not written |
 | After the data is loaded | GitHub Actions, [`contract-data-tests.yml`](.github/workflows/contract-data-tests.yml) | `datacontract ci` on the real tables, on merge to `main`, every morning and by hand |
 | What no rule covers | notebook `06_observer` | statistical drift: mean shift, distribution change, null rate, volume, freshness |
 
@@ -76,7 +74,7 @@ That is the check a pull request runs before any data exists.
    ```
    *Checkpoint:* nine scenarios print, each with its `breaking` level for the consumer and the producer view.
 3. **Put the repo in your workspace** (Free Edition works). Use a Git folder (Workspace, Create, Git folder; a private repo needs a GitHub credential under Settings, Linked accounts) or upload it with the Databricks CLI.
-4. **Run `notebooks/00_setup`.** *Checkpoint:* the schema `vid11_databricks_contracts` has six tables, all created from `pipeline/schemas.py`.
+4. **Run `notebooks/00_setup`.** *Checkpoint:* the schema `vid11_databricks_contracts` has four tables, all created from `pipeline/schemas.py`.
 5. **Run `notebooks/01_producer`** with `batch = good`, then `cents`, then `extra`. *Checkpoint:*
 
    | Batch | Result |
@@ -86,7 +84,7 @@ That is the check a pull request runs before any data exists.
    | `extra`, strict | rejected: the field is not in the contract |
    | `extra`, permissive (`strict = false`) | published, the extra column is dropped |
 
-6. **Run `02` to `06` in order:** the gold table with write, audit and publish; a contract generated from lineage; who a change would hit; the releases; the observer.
+6. **Run `02` to `06` in order:** the gold table, written only after the contract audit passes; a contract generated from lineage; who a change would hit; the releases; the observer.
 
 <details>
 <summary><b>Turn on the after-load workflow (needs a token)</b></summary>

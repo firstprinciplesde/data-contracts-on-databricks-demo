@@ -42,7 +42,7 @@ def find_readers(table: str, ws: WorkspaceClient | None = None) -> list[Reader]:
     """Readers of `table` (catalog.schema.table) with the columns each one uses.
 
     >>> find_readers("main.sales.orders")
-    [Reader(table='finance_export', columns=['order_date', 'revenue'])]
+    [Reader(table='silver_orders', columns=['order_id', 'amount'])]
     """
     ws = _client(ws)
     used: dict[str, set[str]] = {}

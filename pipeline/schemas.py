@@ -16,20 +16,12 @@ SILVER_ORDERS = """
 REVENUE_DAILY = """
   order_date DATE NOT NULL, orders BIGINT NOT NULL, revenue DECIMAL(18,2) NOT NULL"""
 
-FINANCE_EXPORT = """
-  order_date DATE NOT NULL, revenue DECIMAL(18,2) NOT NULL"""
-
-ML_FEATURES = """
-  order_date DATE NOT NULL, orders BIGINT NOT NULL, revenue DECIMAL(18,2) NOT NULL, revenue_7d_avg DECIMAL(22,6)"""
-
 # table name -> DDL, in the order setup creates them
 TABLES = {
     "orders_landing": ORDERS_LANDING,
     "silver_orders": SILVER_ORDERS,
     "revenue_daily": REVENUE_DAILY,
     "revenue_daily_staging": REVENUE_DAILY,
-    "finance_export": FINANCE_EXPORT,
-    "ml_features": ML_FEATURES,
 }
 
 

@@ -26,7 +26,7 @@ load = lambda rel: yaml.safe_load(open(os.path.join(ROOT, rel)))
 # MAGIC ## What each reader uses, and whether the contract knows about it
 
 # COMMAND ----------
-for table, contract_rel in [("orders_landing", "contracts/orders_api.yaml"), ("revenue_daily", "contracts/revenue_daily.yaml")]:
+for table, contract_rel in [("orders_landing", "contracts/orders_api.yaml")]:
     full = f"{S}.{table}"
     cols = spark.table(full).columns
     print("=====", table)

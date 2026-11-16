@@ -1,9 +1,9 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC # 02 The gold data product
-# MAGIC Silver and the two readers, then `revenue_daily` built for finance and ML under its own contract.
+# MAGIC # 02 Silver to gold, enforced when gold is written
+# MAGIC The analytics team builds silver, then the gold table `revenue_daily` under its own contract.
 # MAGIC The silver-to-gold logic is `pipeline/revenue_daily.py`.
-# MAGIC Write, audit, publish: the result is written to a staging table, checked against the contract, and only then published.
+# MAGIC Write, audit, publish: the result is written to a staging table, checked against the contract, and only then written to the gold table.
 
 # COMMAND ----------
 # MAGIC %pip install "databricks-labs-dqx[datacontract]"
@@ -45,19 +45,6 @@ if n_invalid:
     raise ValueError("revenue_daily breaks its contract, not published")
 
 # COMMAND ----------
-# publish: only after the audit passed
+# write gold: only after the audit passed
 staged.write.mode("overwrite").saveAsTable(f"{S}.revenue_daily")
 spark.table(f"{S}.revenue_daily").orderBy("order_date").show()
-
-# COMMAND ----------
-# MAGIC %md
-# MAGIC ## The consumers of the gold table: finance and ML read revenue_daily, not silver
-
-# COMMAND ----------
-from pyspark.sql.window import Window
-gold = spark.table(f"{S}.revenue_daily")
-gold.select("order_date", "revenue").write.mode("overwrite").saveAsTable(f"{S}.finance_export")
-w = Window.orderBy("order_date").rowsBetween(-6, 0)
-(gold.withColumn("revenue_7d_avg", F.avg("revenue").over(w).cast("decimal(22,6)"))
-     .select("order_date", "orders", "revenue", "revenue_7d_avg")
-     .write.mode("overwrite").saveAsTable(f"{S}.ml_features"))

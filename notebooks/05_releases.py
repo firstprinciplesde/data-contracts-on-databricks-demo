@@ -61,8 +61,8 @@ for t in ["orders_landing", "silver_orders"]:
 print(spark.sql(f"SELECT COUNT(*) AS rows, COUNT(amount_cents) AS with_cents FROM {S}.silver_orders").collect())
 
 # COMMAND ----------
-# B moves its own table to amount_cents. Finance and ML read revenue_daily, whose contract does not change,
-# so they are not touched.
+# The analytics team moves its own table to amount_cents. The gold contract does not change,
+# so nothing downstream of gold is touched.
 before = spark.table(f"{S}.revenue_daily").schema.simpleString()
 spark.sql(f"""CREATE OR REPLACE TABLE {S}.revenue_daily AS
 SELECT CAST(created_at AS DATE) AS order_date, COUNT(*) AS orders, CAST(SUM(amount_cents) / 100 AS DECIMAL(18,2)) AS revenue

@@ -6,7 +6,7 @@ version: 1.0.0
 status: active
 domain: sales
 description:
-  purpose: Orders published by the Orders API, one record per order.
+  purpose: Producer contract. Orders from the Orders API, one record per order, enforced when the producer writes to bronze.
 schema:
   - name: orders_landing
     logicalType: object
