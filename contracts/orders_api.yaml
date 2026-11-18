@@ -2,7 +2,7 @@ apiVersion: v3.2.0
 kind: DataContract
 id: orders-api
 name: orders_api
-version: 1.0.0
+version: 1.1.0
 status: active
 domain: sales
 # Step 1 · Purpose first, then the owning team and the server (your catalog and schema)
@@ -52,6 +52,10 @@ schema:
         physicalType: STRING
         required: false
       - name: channel
+        logicalType: string
+        physicalType: STRING
+        required: false
+      - name: discount_code
         logicalType: string
         physicalType: STRING
         required: false
