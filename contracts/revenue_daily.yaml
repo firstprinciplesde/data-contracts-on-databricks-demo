@@ -5,6 +5,7 @@ name: revenue_daily
 version: 1.0.0
 status: active
 domain: sales
+# Step 4 · The analytics team's contract: gold, three columns, one rule
 description:
   purpose: Gold contract. Daily orders and revenue, enforced when the analytics team writes the gold table from silver.
 schema:

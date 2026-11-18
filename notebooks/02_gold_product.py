@@ -12,6 +12,10 @@
 dbutils.library.restartPython()
 
 # COMMAND ----------
+# MAGIC %md
+# MAGIC ### Step 1 · Silver: the four columns gold needs
+
+# COMMAND ----------
 import os, sys
 from pyspark.sql import functions as F
 S = "workspace.vid11_databricks_contracts"
@@ -23,6 +27,10 @@ from pipeline.revenue_daily import build_revenue_daily
 (spark.table(f"{S}.orders_landing")
       .select("order_id", "customer_id", "amount", "created_at")
       .write.mode("overwrite").saveAsTable(f"{S}.silver_orders"))
+
+# COMMAND ----------
+# MAGIC %md
+# MAGIC ### Step 2 · Write to staging, then audit it against revenue_daily.yaml
 
 # COMMAND ----------
 # write: the gold job's result goes into the staging table first
@@ -43,6 +51,10 @@ if n_invalid:
     invalid_df.select("order_date", "orders", "revenue", F.explode("_errors").alias("e")) \
         .select("order_date", "orders", "revenue", "e.name", "e.message").show(truncate=False)
     raise ValueError("revenue_daily breaks its contract, not published")
+
+# COMMAND ----------
+# MAGIC %md
+# MAGIC ### Step 3 · Gold: written only after the audit passed
 
 # COMMAND ----------
 # write gold: only after the audit passed

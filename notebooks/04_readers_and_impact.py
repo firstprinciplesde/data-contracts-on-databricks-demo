@@ -23,7 +23,7 @@ load = lambda rel: yaml.safe_load(open(os.path.join(ROOT, rel)))
 
 # COMMAND ----------
 # MAGIC %md
-# MAGIC ## What each reader uses, and whether the contract knows about it
+# MAGIC ## Step 1 · What each reader uses, and whether the contract knows about it
 
 # COMMAND ----------
 for table, contract_rel in [("orders_landing", "contracts/orders_api.yaml")]:
@@ -35,7 +35,7 @@ for table, contract_rel in [("orders_landing", "contracts/orders_api.yaml")]:
 
 # COMMAND ----------
 # MAGIC %md
-# MAGIC ## Which readers would this change break
+# MAGIC ## Step 2 · Which readers would this change break
 
 # COMMAND ----------
 cases = [

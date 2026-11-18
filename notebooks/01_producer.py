@@ -12,6 +12,10 @@
 dbutils.library.restartPython()
 
 # COMMAND ----------
+# MAGIC %md
+# MAGIC ### Step 1 · Pick the batch, strict mode and the contract version
+
+# COMMAND ----------
 dbutils.widgets.dropdown("batch", "good", ["good", "cents", "extra", "null_currency", "renamed", "drift"])
 dbutils.widgets.dropdown("strict", "true", ["true", "false"])
 dbutils.widgets.text("contract", "contracts/orders_api.yaml")
@@ -20,6 +24,10 @@ batch = dbutils.widgets.get("batch")
 strict = dbutils.widgets.get("strict") == "true"
 contract_rel = dbutils.widgets.get("contract")
 start_id = int(dbutils.widgets.get("start_id"))
+
+# COMMAND ----------
+# MAGIC %md
+# MAGIC ### Step 2 · Read the contract and call the Orders API
 
 # COMMAND ----------
 import os, sys, yaml
@@ -49,6 +57,10 @@ print(batch, df.count(), "records from the API, columns:", df.columns)
 print("contract", contract["version"], "from", contract_rel, "| strict schema:", strict)
 
 # COMMAND ----------
+# MAGIC %md
+# MAGIC ### Step 3 · DQX builds the checks from the contract: schema first, then the value rules
+
+# COMMAND ----------
 from databricks.sdk import WorkspaceClient
 from databricks.labs.dqx.engine import DQEngine
 from databricks.labs.dqx.profiler.generator import DQGenerator
@@ -59,6 +71,10 @@ rules = DQGenerator(workspace_client=ws, spark=spark).generate_rules_from_contra
 valid_df, invalid_df = DQEngine(ws).apply_checks_by_metadata_and_split(df, rules)
 n_valid, n_invalid = valid_df.count(), invalid_df.count()
 print(f"valid {n_valid}, invalid {n_invalid}")
+
+# COMMAND ----------
+# MAGIC %md
+# MAGIC ### Step 4 · Publish to bronze, or reject the whole batch to quarantine_orders
 
 # COMMAND ----------
 if n_invalid:

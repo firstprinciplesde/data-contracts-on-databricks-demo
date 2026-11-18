@@ -6,6 +6,7 @@ on:
   pull_request:
 
 jobs:
+  # Step 1 · Job one: lint, breaking changes against main, dry run, owner summary
   contract-files:
     runs-on: ubuntu-latest
     steps:
@@ -39,6 +40,7 @@ jobs:
       - name: Who owns and who consumes
         run: python ci/consumers.py "$GITHUB_STEP_SUMMARY"
 
+  # Step 2 · Job two: the columns the job declares must match the contract
   declared-output:
     # Our addition: what the jobs declare they write (pipeline/schemas.py) must match the contracts.
     runs-on: ubuntu-latest
@@ -50,6 +52,7 @@ jobs:
       - run: pip install pyyaml
       - run: python ci/check_output_schema.py
 
+  # Step 3 · Job three: grade nine kinds of change for consumer and producer
   change-scenarios:
     # The playbook's change scenarios: the breaking levels of each must be what the playbook says.
     runs-on: ubuntu-latest

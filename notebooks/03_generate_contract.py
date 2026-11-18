@@ -5,6 +5,10 @@
 # MAGIC then writes a draft ODCS file to review. Faster than starting from an empty file.
 
 # COMMAND ----------
+# MAGIC %md
+# MAGIC ### Step 1 · Draft a contract from lineage, the schema and a profile of the data
+
+# COMMAND ----------
 import os, sys, yaml
 from databricks.sdk import WorkspaceClient
 ROOT = os.path.abspath(os.path.join(os.getcwd(), ".."))

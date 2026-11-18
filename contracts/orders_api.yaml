@@ -5,8 +5,10 @@ name: orders_api
 version: 1.0.0
 status: active
 domain: sales
+# Step 1 · Purpose first, then the owning team and the server (your catalog and schema)
 description:
   purpose: Producer contract. Orders from the Orders API, one record per order, enforced when the producer writes to bronze.
+# Step 2 · The columns: logical type, physical type and limits
 schema:
   - name: orders_landing
     logicalType: object
@@ -54,6 +56,7 @@ schema:
         physicalType: STRING
         required: false
     # All checks that are not a column's own type limits, in one place.
+    # Step 3 · The quality block: rules that are not one column's own limit
     quality:
       - id: orders_not_empty
         metric: rowCount

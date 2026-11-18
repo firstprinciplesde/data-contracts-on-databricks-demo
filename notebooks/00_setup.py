@@ -5,6 +5,10 @@
 # MAGIC `pipeline/schemas.py`. The same declarations are what CI compares with the contracts.
 
 # COMMAND ----------
+# MAGIC %md
+# MAGIC ### Step 1 · Create the schema and the four tables from the contract file (exact types, NOT NULL)
+
+# COMMAND ----------
 import os, sys
 ROOT = os.path.abspath(os.path.join(os.getcwd(), ".."))
 sys.path.append(ROOT)

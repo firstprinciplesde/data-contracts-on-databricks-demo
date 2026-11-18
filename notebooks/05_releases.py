@@ -21,7 +21,7 @@ print("readers of landing.amount:", column_readers(ws, f"{S}.orders_landing", "a
 
 # COMMAND ----------
 # MAGIC %md
-# MAGIC ## Widen a type (minor): quantity INT to BIGINT
+# MAGIC ## Step 1 · Widen a type (minor): quantity INT to BIGINT
 
 # COMMAND ----------
 spark.sql(f"ALTER TABLE {S}.orders_landing SET TBLPROPERTIES ('delta.enableTypeWidening' = 'true')")
@@ -30,7 +30,7 @@ print(spark.table(f"{S}.orders_landing").schema["quantity"].dataType)
 
 # COMMAND ----------
 # MAGIC %md
-# MAGIC ## Rename (expand, copy, remove): currency to currency_code
+# MAGIC ## Step 2 · Rename (expand, copy, remove): currency to currency_code
 
 # COMMAND ----------
 for t in ["orders_landing"]:
@@ -43,7 +43,7 @@ spark.sql(f"ALTER TABLE {S}.orders_landing DROP COLUMN currency")
 
 # COMMAND ----------
 # MAGIC %md
-# MAGIC ## Drop a column (deprecate, check readers, remove): channel
+# MAGIC ## Step 3 · Drop a column (deprecate, check readers, remove): channel
 
 # COMMAND ----------
 assert not column_readers(ws, f"{S}.orders_landing", "channel"), "someone still reads channel"
@@ -52,7 +52,7 @@ print(spark.table(f"{S}.orders_landing").columns)
 
 # COMMAND ----------
 # MAGIC %md
-# MAGIC ## Change a meaning: 1.1.0 adds amount_cents next to amount (minor), the readers move, 2.0.0 drops amount (major)
+# MAGIC ## Step 4 · Change a meaning: 1.1.0 adds amount_cents next to amount (minor), the readers move, 2.0.0 drops amount (major)
 
 # COMMAND ----------
 for t in ["orders_landing", "silver_orders"]:

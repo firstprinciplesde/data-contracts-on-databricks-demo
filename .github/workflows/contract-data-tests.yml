@@ -3,6 +3,7 @@ name: Contract data tests
 # After the data is loaded: test the real tables on Databricks against their contracts.
 # Runs on merge to main, every morning (after the nightly load) and by hand. Never on pull requests,
 # so pull requests from forks never get the secrets. Skips with a notice when the secrets are missing.
+# Step 1 · When it runs: every push to main, every morning, on demand (never on pull requests: forks get no secrets)
 on:
   push:
     branches: [main]
@@ -11,6 +12,7 @@ on:
   workflow_dispatch:
 
 jobs:
+  # Step 2 · The Data Contract CLI tests every contract on the real tables (needs the 3 DATABRICKS_* secrets)
   data-tests:
     runs-on: ubuntu-latest
     env:

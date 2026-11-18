@@ -11,6 +11,10 @@ dbutils.widgets.text("control_where", "CAST(order_id AS INT) BETWEEN 3001 AND 50
 dbutils.widgets.text("current_where", "CAST(order_id AS INT) BETWEEN 5001 AND 7000")
 
 # COMMAND ----------
+# MAGIC %md
+# MAGIC ### Step 1 · Derive the tests from the contract: mean shift, PSI, null rate, volume, freshness
+
+# COMMAND ----------
 import os, sys, yaml, json
 from datetime import datetime
 from decimal import Decimal
@@ -29,6 +33,10 @@ for c in checks:
     print("  ", c["test"], c["column"] or "(table)")
 
 # COMMAND ----------
+# MAGIC %md
+# MAGIC ### Step 2 · Compare the control batch, then the current (drift) batch, with the baseline
+
+# COMMAND ----------
 base = compute_stats(spark, TABLE, drafted, checks, dbutils.widgets.get("baseline_where"))
 control = compute_stats(spark, TABLE, drafted, checks, dbutils.widgets.get("control_where"))
 current = compute_stats(spark, TABLE, drafted, checks, dbutils.widgets.get("current_where"))
@@ -42,6 +50,10 @@ def show(label, cur):
 
 show("control batch, same shape as the baseline", control)
 findings = show("current batch, passes every contract rule", current)
+
+# COMMAND ----------
+# MAGIC %md
+# MAGIC ### Step 3 · Save the stats to obs_stats
 
 # COMMAND ----------
 spark.createDataFrame([(datetime.utcnow().isoformat(), json.dumps(base), json.dumps(current), json.dumps(findings))],
